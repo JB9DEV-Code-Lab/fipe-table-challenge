@@ -11,7 +11,6 @@ import JB9DEV.codelab.FIPEtablechallenge.utils.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class YearPresenter implements IPresenter {
     private final RequestFipeApiService FIPE_API_SERVICE;
