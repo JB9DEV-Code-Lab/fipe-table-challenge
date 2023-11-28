@@ -5,6 +5,7 @@ import JB9DEV.codelab.FIPEtablechallenge.dtos.ModelResponseDTO;
 import JB9DEV.codelab.FIPEtablechallenge.enums.FipeApiCategories;
 import JB9DEV.codelab.FIPEtablechallenge.enums.VehicleTypes;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingBrandCodeException;
+import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleModelException;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleTypeException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -41,6 +42,12 @@ public class RequestFipeApiService {
     public ModelResponseDTO getModels() throws MissingVehicleTypeException, MissingBrandCodeException {
         String models = API_SERVICE.get(getModelsPath());
         return JSON_SERIALIZER.deserialize(models, ModelResponseDTO.class);
+    }
+
+    public List<DefaultResponseDTO> getYears() throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleYearException {
+        String years = API_SERVICE.get(getYearsPath());
+
+        return JSON_SERIALIZER.deserialize(years, new TypeReference<>(){});
     }
 
     public String getBrandCode() {
@@ -88,6 +95,14 @@ public class RequestFipeApiService {
         }
 
         return getBrandsPath() + "/" + brandCode + getPath(FipeApiCategories.MODELS);
+    }
+
+    private String getYearsPath() throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleModelException {
+        if (modelCode == null) {
+            throw new MissingVehicleYearException();
+        }
+
+        return getModelsPath() + "/" + modelCode + getPath(FipeApiCategories.YEARS);
     }
 
     private String getPath(Enum<? extends Enum<?>> key) {
