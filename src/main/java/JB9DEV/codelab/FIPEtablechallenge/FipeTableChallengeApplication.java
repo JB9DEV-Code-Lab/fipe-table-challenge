@@ -3,6 +3,7 @@ package JB9DEV.codelab.FIPEtablechallenge;
 import JB9DEV.codelab.FIPEtablechallenge.presenters.BrandPresenter;
 import JB9DEV.codelab.FIPEtablechallenge.presenters.IntroductionPresenter;
 import JB9DEV.codelab.FIPEtablechallenge.presenters.ModelPresenter;
+import JB9DEV.codelab.FIPEtablechallenge.presenters.YearPresenter;
 import JB9DEV.codelab.FIPEtablechallenge.services.RequestFipeApiService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,25 +21,30 @@ public class FipeTableChallengeApplication implements CommandLineRunner {
 		// region object instances
 		IntroductionPresenter introduction = new IntroductionPresenter();
 		RequestFipeApiService fipeApiService = new RequestFipeApiService();
-		BrandPresenter brand = new BrandPresenter(fipeApiService);
-		ModelPresenter model = new ModelPresenter(fipeApiService);
+		BrandPresenter brandPresenter = new BrandPresenter(fipeApiService);
+		ModelPresenter modelPresenter = new ModelPresenter(fipeApiService);
+		YearPresenter yearPresenter = new YearPresenter(fipeApiService);
 		// endregion object instances
 
 		// region application flow
 		String vehicleType = introduction.show();
 		fipeApiService.setVehicleType(vehicleType);
 
-		String vehicleBrandCode = brand.show();
+		String vehicleBrandCode = brandPresenter.show();
 		fipeApiService.setBrandCode(vehicleBrandCode);
 
-		String vehicleModelCode = model.show();
+		String vehicleModelCode = modelPresenter.show();
 		fipeApiService.setModelCode(vehicleModelCode);
+
+		String yearCode = yearPresenter.show();
+		fipeApiService.setYearCode(yearCode);
 
 		System.out.printf("""
 			Vehicle type: %s
 			Brand: %s
 			Model: %s
-		""", vehicleType, vehicleBrandCode, vehicleModelCode);
+			Year: %s
+		""", vehicleType, vehicleBrandCode, vehicleModelCode, yearCode);
 		// endregion application flow
 	}
 }
