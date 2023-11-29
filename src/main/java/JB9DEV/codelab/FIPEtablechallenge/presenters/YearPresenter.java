@@ -2,15 +2,14 @@ package JB9DEV.codelab.FIPEtablechallenge.presenters;
 
 import JB9DEV.codelab.FIPEtablechallenge.dtos.DefaultResponseDTO;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingBrandCodeException;
+import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleModelException;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleTypeException;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleYearException;
 import JB9DEV.codelab.FIPEtablechallenge.interfaces.IPresenter;
 import JB9DEV.codelab.FIPEtablechallenge.services.RequestFipeApiService;
 import JB9DEV.codelab.FIPEtablechallenge.utils.Reader;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class YearPresenter implements IPresenter {
     private final RequestFipeApiService FIPE_API_SERVICE;
@@ -22,6 +21,7 @@ public class YearPresenter implements IPresenter {
         this.FIPE_API_SERVICE = fipeApiService;
     }
 
+    // region public methods
     @Override
     public String show() {
         fetchYears();
@@ -39,24 +39,30 @@ public class YearPresenter implements IPresenter {
     // region private methods
     private void fetchYears() {
         try {
-            availableYears = FIPE_API_SERVICE.getYears();
-        } catch(MissingBrandCodeException | MissingVehicleTypeException | MissingVehicleYearException exception) {
+            availableYears = FIPE_API_SERVICE.fetchYears();
+        } catch(MissingVehicleTypeException | MissingBrandCodeException | MissingVehicleModelException exception) {
             System.out.println(exception.getMessage());
         }
     }
 
     private void setFuelMap() {
-        Map<String, String> codeYearMap = new HashMap<>();
+        Set<String> fuelSet = new HashSet<>();
 
-        availableYears.forEach(yearDTO -> {
-            String[] yearFuel = yearDTO.name().split("\\s");
-            codeYearMap.put(yearDTO.code(), yearFuel[0]);
-            if (yearFuel.length > 1) {
-                FUEL_MAP.put(yearFuel[1], codeYearMap);
-            } else {
-                FUEL_MAP.put("fuel not available for %s".formatted(FIPE_API_SERVICE.getModelCode()), codeYearMap);
-            }
+        availableYears.forEach(yearDTO -> fuelSet.add(splitYearDTOName(yearDTO)[1]));
+        fuelSet.forEach(fuel -> {
+            Map<String, String> codeYearMap = new HashMap<>();
+
+            availableYears.forEach(yearDTO -> {
+                if (yearDTO.name().contains(fuel)) {
+                    codeYearMap.put(yearDTO.code(), splitYearDTOName(yearDTO)[0]);
+                }
+            });
+            FUEL_MAP.put(fuel, codeYearMap);
         });
+    }
+
+    private String[] splitYearDTOName(DefaultResponseDTO yearDTO) {
+        return yearDTO.name().split("\\s");
     }
 
     private void showFuelYearOptions() {
