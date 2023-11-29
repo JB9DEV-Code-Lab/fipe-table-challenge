@@ -31,6 +31,11 @@ public class YearPresenter implements IPresenter {
         return chooseYear();
     }
 
+    public List<DefaultResponseDTO> getAvailableYears() {
+        return availableYears;
+    }
+    // endregion public methods
+
     // region private methods
     private void fetchYears() {
         try {
