@@ -41,7 +41,7 @@ public class ModelPresenter implements IPresenter {
     // region private methods
     private void fetchModels() {
         try {
-            modelResponse = FIPE_API_SERVICE.getModels();
+            modelResponse = FIPE_API_SERVICE.fetchModels();
         } catch (MissingBrandCodeException | MissingVehicleTypeException exception) {
             System.out.println("Couldn't get models, details: " + exception.getMessage());
         }

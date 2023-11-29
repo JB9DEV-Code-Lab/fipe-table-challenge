@@ -7,22 +7,21 @@ import JB9DEV.codelab.FIPEtablechallenge.services.RequestFipeApiService;
 import JB9DEV.codelab.FIPEtablechallenge.utils.Reader;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class BrandPresenter implements IPresenter {
     private final Reader READER = new Reader();
     private List<DefaultResponseDTO> brands;
-    private RequestFipeApiService fipeApiService;
+    private final RequestFipeApiService FIPE_API_SERVICE;
 
     public BrandPresenter(RequestFipeApiService fipeApiService) {
-        this.fipeApiService = fipeApiService;
+        this.FIPE_API_SERVICE = fipeApiService;
     }
 
     // region public methods
     @Override
     public String show() {
-        String vehicleType = fipeApiService.getVehicleType();
+        String vehicleType = FIPE_API_SERVICE.getVehicleType();
         fetchBrands(vehicleType);
         String favoriteBrand = READER.ask("Is there any favorite brand which do you want search for?",
                 "If there is any please type it down, if not just press enter.");
@@ -46,7 +45,7 @@ public class BrandPresenter implements IPresenter {
     // region private methods
     private void fetchBrands(String vehicleType) {
         try {
-            brands = fipeApiService.getBrands();
+            brands = FIPE_API_SERVICE.fetchBrands();
         } catch (MissingVehicleTypeException exception) {
             System.out.println("An error happened, here are the details: " + exception.getMessage());
         }

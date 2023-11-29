@@ -2,11 +2,13 @@ package JB9DEV.codelab.FIPEtablechallenge.services;
 
 import JB9DEV.codelab.FIPEtablechallenge.dtos.DefaultResponseDTO;
 import JB9DEV.codelab.FIPEtablechallenge.dtos.ModelResponseDTO;
+import JB9DEV.codelab.FIPEtablechallenge.dtos.VehicleDetailsDTO;
 import JB9DEV.codelab.FIPEtablechallenge.enums.FipeApiCategories;
 import JB9DEV.codelab.FIPEtablechallenge.enums.VehicleTypes;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingBrandCodeException;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleModelException;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleTypeException;
+import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleYearException;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
@@ -31,25 +33,10 @@ public class RequestFipeApiService {
     private String brandCode;
     private VehicleTypes vehicleType;
     private String modelCode;
+
+    private String yearCode;
     // endregion fields
-
-    // region public methods
-    public List<DefaultResponseDTO> getBrands() throws MissingVehicleTypeException {
-        String brands = API_SERVICE.get(getBrandsPath());
-        return JSON_SERIALIZER.deserialize(brands, new TypeReference<>(){});
-    }
-
-    public ModelResponseDTO getModels() throws MissingVehicleTypeException, MissingBrandCodeException {
-        String models = API_SERVICE.get(getModelsPath());
-        return JSON_SERIALIZER.deserialize(models, ModelResponseDTO.class);
-    }
-
-    public List<DefaultResponseDTO> getYears() throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleYearException {
-        String years = API_SERVICE.get(getYearsPath());
-
-        return JSON_SERIALIZER.deserialize(years, new TypeReference<>(){});
-    }
-
+    // region getters
     public String getBrandCode() {
         return this.brandCode;
     }
@@ -62,12 +49,22 @@ public class RequestFipeApiService {
         return vehicleType.toString();
     }
 
+    public String getYearCode() {
+        return yearCode;
+    }
+    // endregion getters
+
+    // region setters
     public void setBrandCode(String brandCode) {
         this.brandCode = brandCode;
     }
 
     public void setModelCode(String model) {
         this.modelCode = model;
+    }
+
+    public void setYearCode(String yearCode) {
+        this.yearCode = yearCode;
     }
 
     public void setVehicleType(String vehicleType) {
@@ -78,6 +75,33 @@ public class RequestFipeApiService {
         );
 
         this.vehicleType = vehicleTypeMapping.get(vehicleType);
+    }
+    // endregion setters
+
+    // region public methods
+    public List<DefaultResponseDTO> fetchBrands() throws MissingVehicleTypeException {
+        String brands = API_SERVICE.get(getBrandsPath());
+
+        return JSON_SERIALIZER.deserialize(brands, new TypeReference<>(){});
+    }
+
+    public ModelResponseDTO fetchModels() throws MissingVehicleTypeException, MissingBrandCodeException {
+        String models = API_SERVICE.get(getModelsPath());
+        return JSON_SERIALIZER.deserialize(models, ModelResponseDTO.class);
+    }
+
+    public List<DefaultResponseDTO> fetchYears()
+            throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleModelException {
+        String vehicleDetails = API_SERVICE.get(getYearsPath());
+
+        return JSON_SERIALIZER.deserialize(vehicleDetails, new TypeReference<>(){});
+    }
+
+    public VehicleDetailsDTO fetchVehicleDetails()
+            throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleModelException, MissingVehicleYearException {
+
+        String vehicleDetails = API_SERVICE.get(getVehicleDetailsPath());
+        return JSON_SERIALIZER.deserialize(vehicleDetails, VehicleDetailsDTO.class);
     }
     // endregion public methods
 
@@ -97,12 +121,22 @@ public class RequestFipeApiService {
         return getBrandsPath() + "/" + brandCode + getPath(FipeApiCategories.MODELS);
     }
 
-    private String getYearsPath() throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleModelException {
+    private String getYearsPath()
+            throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleModelException {
+
         if (modelCode == null) {
+            throw new MissingVehicleModelException();
+        }
+        return getModelsPath() + "/" + modelCode + getPath(FipeApiCategories.YEARS);
+    }
+
+    private String getVehicleDetailsPath()
+            throws MissingVehicleTypeException, MissingBrandCodeException, MissingVehicleModelException, MissingVehicleYearException {
+
+        if (yearCode == null) {
             throw new MissingVehicleYearException();
         }
-
-        return getModelsPath() + "/" + modelCode + getPath(FipeApiCategories.YEARS);
+        return getYearsPath() + "/" + yearCode;
     }
 
     private String getPath(Enum<? extends Enum<?>> key) {
