@@ -37,20 +37,8 @@ public class RequestFipeApiService {
     private String yearCode;
     // endregion fields
     // region getters
-    public String getBrandCode() {
-        return this.brandCode;
-    }
-
-    public String getModelCode() {
-        return modelCode;
-    }
-
     public String getVehicleType() {
         return vehicleType.toString();
-    }
-
-    public String getYearCode() {
-        return yearCode;
     }
     // endregion getters
 
