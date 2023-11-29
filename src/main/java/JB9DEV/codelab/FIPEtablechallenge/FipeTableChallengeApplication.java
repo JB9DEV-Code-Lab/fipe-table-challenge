@@ -1,9 +1,6 @@
 package JB9DEV.codelab.FIPEtablechallenge;
 
-import JB9DEV.codelab.FIPEtablechallenge.presenters.BrandPresenter;
-import JB9DEV.codelab.FIPEtablechallenge.presenters.IntroductionPresenter;
-import JB9DEV.codelab.FIPEtablechallenge.presenters.ModelPresenter;
-import JB9DEV.codelab.FIPEtablechallenge.presenters.YearPresenter;
+import JB9DEV.codelab.FIPEtablechallenge.presenters.*;
 import JB9DEV.codelab.FIPEtablechallenge.services.RequestFipeApiService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,6 +21,7 @@ public class FipeTableChallengeApplication implements CommandLineRunner {
 		BrandPresenter brandPresenter = new BrandPresenter(fipeApiService);
 		ModelPresenter modelPresenter = new ModelPresenter(fipeApiService);
 		YearPresenter yearPresenter = new YearPresenter(fipeApiService);
+		VehicleDetailsPresenter vehicleDetailsPresenter = new VehicleDetailsPresenter(fipeApiService);
 		// endregion object instances
 
 		// region application flow
@@ -37,14 +35,24 @@ public class FipeTableChallengeApplication implements CommandLineRunner {
 		fipeApiService.setModelCode(vehicleModelCode);
 
 		String yearCode = yearPresenter.show();
-		fipeApiService.setYearCode(yearCode);
-
-		System.out.printf("""
-			Vehicle type: %s
-			Brand: %s
-			Model: %s
-			Year: %s
-		""", vehicleType, vehicleBrandCode, vehicleModelCode, yearCode);
+		if (yearCode.isEmpty()) {
+			System.out.println("\n\nHere all available details for this vehicle:");
+			yearPresenter.getAvailableYears().forEach(yearDTO -> {
+				fipeApiService.setYearCode(yearDTO.code());
+				showVehicleDetails(vehicleDetailsPresenter,
+						"################################################################################");
+			});
+		} else {
+			fipeApiService.setYearCode(yearCode);
+			showVehicleDetails(vehicleDetailsPresenter,
+					"\n\nHere are all vehicle details according to your choices:");
+		}
 		// endregion application flow
+	}
+
+	private void showVehicleDetails(VehicleDetailsPresenter vehicleDetailsPresenter, String message) {
+		String vehicleDetails = vehicleDetailsPresenter.show();
+		System.out.println(message);
+		System.out.println(vehicleDetails);
 	}
 }
