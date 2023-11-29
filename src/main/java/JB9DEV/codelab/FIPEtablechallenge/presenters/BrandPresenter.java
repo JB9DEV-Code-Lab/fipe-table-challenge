@@ -21,8 +21,7 @@ public class BrandPresenter implements IPresenter {
     // region public methods
     @Override
     public String show() {
-        String vehicleType = FIPE_API_SERVICE.getVehicleType();
-        fetchBrands(vehicleType);
+        fetchBrands();
         String favoriteBrand = READER.ask("Is there any favorite brand which do you want search for?",
                 "If there is any please type it down, if not just press enter.");
 
@@ -43,7 +42,7 @@ public class BrandPresenter implements IPresenter {
     // endregion public methods
 
     // region private methods
-    private void fetchBrands(String vehicleType) {
+    private void fetchBrands() {
         try {
             brands = FIPE_API_SERVICE.fetchBrands();
         } catch (MissingVehicleTypeException exception) {
