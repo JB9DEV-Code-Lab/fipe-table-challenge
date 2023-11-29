@@ -7,7 +7,6 @@ import JB9DEV.codelab.FIPEtablechallenge.utils.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class IntroductionPresenter implements IPresenter {
     private final Reader READER = new Reader();

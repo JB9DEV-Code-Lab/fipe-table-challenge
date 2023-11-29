@@ -4,7 +4,6 @@ import JB9DEV.codelab.FIPEtablechallenge.dtos.DefaultResponseDTO;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingBrandCodeException;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleModelException;
 import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleTypeException;
-import JB9DEV.codelab.FIPEtablechallenge.exceptions.MissingVehicleYearException;
 import JB9DEV.codelab.FIPEtablechallenge.interfaces.IPresenter;
 import JB9DEV.codelab.FIPEtablechallenge.services.RequestFipeApiService;
 import JB9DEV.codelab.FIPEtablechallenge.utils.Reader;
@@ -84,7 +83,7 @@ public class YearPresenter implements IPresenter {
 
     private String chooseYear() {
         String chosenYear = READER.ask("Which year you want?",
-                "type down the code before \": \". If you want to see  not %s for all these options just press enter"
+                "type down the code before \": \". If you want to see %s for all these options just press enter"
                         .formatted(FIPE_API_SERVICE.getVehicleType()));
 
         if (!isChosenYearValid(chosenYear)) {
