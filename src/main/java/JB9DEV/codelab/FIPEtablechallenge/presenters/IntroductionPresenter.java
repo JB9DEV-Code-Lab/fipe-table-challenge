@@ -39,7 +39,7 @@ public class IntroductionPresenter implements IPresenter {
             return ask(question);
         }
 
-        return answer;
+        return answer.toLowerCase();
     }
     // endregion private methods
 }
