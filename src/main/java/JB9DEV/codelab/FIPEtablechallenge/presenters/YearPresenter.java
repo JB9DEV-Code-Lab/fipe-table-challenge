@@ -69,6 +69,10 @@ public class YearPresenter implements IPresenter {
     }
 
     private boolean isChosenYearValid(String chosenYear) {
+        if (chosenYear.isEmpty()) {
+            return true;
+        }
+
         return availableYears.stream().anyMatch(year -> year.code().equals(chosenYear));
     }
 
