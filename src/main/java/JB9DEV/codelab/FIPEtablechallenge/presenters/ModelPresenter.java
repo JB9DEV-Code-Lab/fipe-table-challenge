@@ -22,17 +22,6 @@ public class ModelPresenter implements IPresenter {
 
     @Override
     public String show() {
-        String brandCode = FIPE_API_SERVICE.getBrandCode();
-        String vehicleType = FIPE_API_SERVICE.getVehicleType();
-
-        if (brandCode == null) {
-            throw new MissingBrandCodeException();
-        }
-
-        if (vehicleType == null) {
-            throw new MissingVehicleTypeException();
-        }
-
         fetchModels();
 
         return filterModel();
