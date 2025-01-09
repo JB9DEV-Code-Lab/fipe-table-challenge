@@ -39,6 +39,14 @@ application keep asking it until one of the brands is correctly chosen.
 
 If kind of does the same that the brand does, focused on the vehicle model though.
 
+#### YearPresenter
+
+[//]: # (TODO)
+
+#### VehicleDetailsPresenter
+
+[//]: # (TODO)
+
 ### Services
 
 I created some specialized services to abstract and get it easy to do the things, because doing it everywhere it's
@@ -89,17 +97,17 @@ object-oriented programming concepts.
         - [x] call reader to ask if one of them should be the one or if the person wants to list all of them
         - [x] if that is the case, call reader to ask which branch the person wants to search for
 - [x] call reader to ask which of the models the person wants to search for
-- [ ] call presenter to list all models and years that matches the choices
+- [x] call presenter to list all models and years that matches the choices
 - DTOs
 - [x] brands
 - [x] model
-- [ ] vehicles
+- [x] vehicles
 - services
 - [x] fetch data from an API
 - [x] desirialize from DTO
-- [ ] serialize to DTO
+- [x] serialize to DTO
 - presenters
 - [x] introduction
 - [x] brand
 - [x] model
-- [ ] vehicle
+- [x] vehicle
